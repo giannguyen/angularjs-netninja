@@ -45,17 +45,32 @@ main{
   width: 80%;
   margin: 30px auto;
   border-radius: 10px;
+  &.ng-enter{
+    transition: 0.5s linear all;
+    opacity: 0;
+    &.ng-enter-active{
+      opacity: 1;
+    }
+  }
+
 }
 
 .content{
   padding: 20px;
-  input{
+  input, textarea{
     width: 90%;
     padding: 10px 5%;
     border-radius: 10px;
     border: 2px solid #ddd;
     margin: 10px 0;
+    &.ng-invalid.ng-touched{
+      border: 2px solid red;
+    }
   }
+  input[disabled="disabled"]{
+    opacity:0.4;
+    cursor: not-allowed !important:;   
+ }
   input[type="submit"]:last-child{
     width: 150px;
     display: block;
@@ -104,4 +119,29 @@ main{
   color: crimson;
   cursor: pointer;
   margin-left: 10px;
+}
+
+#ninja-list li{
+  &.ng-enter{
+    transition: 0.2s linear all;
+    opacity: 0;
+    transform: translateY(30px);
+    &.ng-enter-active{
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  &.ng-leave{
+    transition: 0.2s linear all;
+    opacity: 1;
+    transform: translateX(0);
+    &.ng-leave-active{
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+  }
+  &.ng-leave-stagger{
+    transition-delay: 0.2s;
+    transition-duration: 0;
+  }
 }

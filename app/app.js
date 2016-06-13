@@ -1,10 +1,21 @@
-var myNinjaApp = angular.module('myNinjaApp',['ngRoute']);
+var myNinjaApp = angular.module('myNinjaApp',['ngRoute','ngAnimate']);
 
-myNinjaApp.config(['$routeProvider', function($routeProvider){
+myNinjaApp.config(['$routeProvider','$locationProvider', function($routeProvider, $locationProvider){
+
+  $locationProvider.html5Mode(true);
 
   $routeProvider
   .when('/home', {
-    templateUrl: 'views/home.html'
+    templateUrl: 'views/home.html',
+    controller: 'NinjaController'
+  })
+  .when('/contact',{
+    templateUrl: 'views/contact.html',
+    controller: 'ContactController'
+  })
+  .when('/contact-success',{
+    templateUrl: 'views/contact-success.html',
+    controller: 'ContactController'
   })
   .when('/directory',{
     templateUrl: 'views/directory.html',
@@ -15,7 +26,32 @@ myNinjaApp.config(['$routeProvider', function($routeProvider){
 
 }]);
 
-myNinjaApp.controller('NinjaController',['$scope', function($scope){
+myNinjaApp.directive('randomNinja', [function(){
+
+  return {
+    restrict: 'E',
+    scope: {
+      ninjas: '=',
+      title: '='
+    },
+    templateUrl: 'views/random.html',
+    transclude: true,
+    replace: true,
+    controller: function($scope){
+      $scope.random = Math.floor(Math.random() * 4);
+    }
+  };
+}]);
+
+myNinjaApp.controller('ContactController', ['$scope','$location', function($scope, $location){
+
+  $scope.sendMessage = function(){
+    $location.path('/contact-success');
+  }
+
+}]);
+
+myNinjaApp.controller('NinjaController',['$scope','$http', function($scope, $http){
 
   $scope.removeNinja = function(ninja){
     var removeNinjaIndex = $scope.ninjas.indexOf(ninja);
@@ -34,37 +70,11 @@ myNinjaApp.controller('NinjaController',['$scope', function($scope){
     $scope.newninja.rate = "";
 
   };
-  $scope.ninjas = [
-    {
-      name: "Yoshi",
-      belt: "Green",
-      rate: "30",
-      available: true,
-      thumb: "content/images/yoshi.png"
-    },
-    {
-      name: "Crystal",
-      belt: "Yellow",
-      rate: "40",
-      available: true,
-      thumb: "content/images/crystal.png"
-    },
-    {
-      name: "Ryn",
-      belt: "orange",
-      rate: "90",
-      available: false,
-      thumb: "content/images/ryu.png"
-    },
-    {
-      name: "Shaun",
-      belt: "black",
-      rate: "20",
-      available: true,
-      thumb: "content/images/shaun.png"
-    }
+  $scope.removeAll = function(){
+    $scope.ninjas = [];
+  }
+  $http.get('data/ninjas.json').success(function(data){
+    $scope.ninjas = data;
+  });
 
-  ];
-
-  console.log(angular.toJson($scope.ninjas));
 }]);
